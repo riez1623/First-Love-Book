@@ -2,42 +2,164 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>First Love - Book</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>First Love by Riez</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Georgia', serif;
+      transition: background-color 0.5s, color 0.5s;
+    }
+    .center-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+    .read-btn, .device-btn {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 1.2em;
+      cursor: pointer;
+    }
+    .hidden { display: none; }
+    .book-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .book {
+      display: flex;
+      background: #f5f5dc;
+      width: 90%;
+      height: 80%;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .page {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      width: 90%;
+      margin-top: 10px;
+    }
+    .toggle-mode {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    .dark-mode {
+      background-color: #1a1a1a;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-
-  <div class="device-picker">
-    <label for="device">Choose device:</label>
-    <select id="device">
-      <option value="mobile">Mobile</option>
-      <option value="tablet">Tablet</option>
-      <option value="computer">Computer</option>
-    </select>
+  <div id="titleScreen" class="center-screen">
+    <h1>First Love</h1>
+    <p>by Riez</p>
+    <button class="read-btn" onclick="startExperience()">Read</button>
+    <button class="toggle-mode" onclick="toggleMode()">🌞/🌙</button>
   </div>
 
-  <div id="book-container" class="book-container">
-
-    <div id="title-page" class="page">
-      <h1>First Love</h1>
-      <button id="start-btn">Read</button>
-    </div>
-
-    <div id="book" class="hidden">
-
-      <div class="page-content" id="page-content"></div>
-
-      <div class="nav-buttons">
-        <button id="prev-btn">&lt; Prev</button>
-        <button id="next-btn">Next &gt;</button>
-      </div>
-
-    </div>
-
+  <div id="deviceSelect" class="center-screen hidden">
+    <h2>Select your device</h2>
+    <button class="device-btn" onclick="initBook('phone')">📱 Phone</button>
+    <button class="device-btn" onclick="initBook('pc')">💻 Tablet/PC</button>
   </div>
 
-  <script src="story.js"></script>
-  <script src="script.js"></script>
+  <div id="bookScreen" class="book-container hidden">
+    <div class="book" id="bookPages"></div>
+    <div class="controls">
+      <button onclick="prevPage()">&#60;</button>
+      <button onclick="nextPage()">&#62;</button>
+    </div>
+    <button class="toggle-mode" onclick="toggleMode()">🌞/🌙</button>
+  </div>
+
+  <script>
+    let currentPage = 0;
+    let deviceType = 'pc';
+
+    const story = `It all started when I was just laying on my bed... [TRUNCATED for brevity during coding, will be added page-wise later]`;
+
+    const phonePages = story.match(/[^.!?]+[.!?]+/g).reduce((acc, sentence, idx) => {
+      if (!acc.length || acc[acc.length - 1].split('. ').length >= 3) acc.push(sentence);
+      else acc[acc.length - 1] += ' ' + sentence;
+      return acc;
+    }, []);
+
+    function splitIntoDoublePages(pages) {
+      const result = [];
+      for (let i = 0; i < pages.length; i += 2) {
+        result.push([pages[i], pages[i + 1] || '']);
+      }
+      return result;
+    }
+
+    const doublePages = splitIntoDoublePages(phonePages);
+
+    function startExperience() {
+      document.getElementById('titleScreen').classList.add('hidden');
+      document.getElementById('deviceSelect').classList.remove('hidden');
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      }
+    }
+
+    function initBook(type) {
+      deviceType = type;
+      document.getElementById('deviceSelect').classList.add('hidden');
+      document.getElementById('bookScreen').classList.remove('hidden');
+      renderPage();
+    }
+
+    function renderPage() {
+      const bookPages = document.getElementById('bookPages');
+      bookPages.innerHTML = '';
+      if (deviceType === 'phone') {
+        const page = document.createElement('div');
+        page.className = 'page';
+        page.textContent = phonePages[currentPage] || '';
+        bookPages.appendChild(page);
+      } else {
+        const [left, right] = doublePages[currentPage] || ['', ''];
+        const leftPage = document.createElement('div');
+        const rightPage = document.createElement('div');
+        leftPage.className = 'page';
+        rightPage.className = 'page';
+        leftPage.textContent = left;
+        rightPage.textContent = right;
+        bookPages.appendChild(leftPage);
+        bookPages.appendChild(rightPage);
+      }
+    }
+
+    function nextPage() {
+      if (deviceType === 'phone') {
+        if (currentPage < phonePages.length - 1) currentPage++;
+      } else {
+        if (currentPage < doublePages.length - 1) currentPage++;
+      }
+      renderPage();
+    }
+
+    function prevPage() {
+      if (currentPage > 0) currentPage--;
+      renderPage();
+    }
+
+    function toggleMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+  </script>
 </body>
 </html>
