@@ -1,139 +1,97 @@
-// script.js
+const storyPages = [
+  // Your story pages here, split into smaller chunks (2-3 sentences per page)
+  // For example:
+  "It all started when I was just laying on my bed, I was so bored, my friends were all busy, the others were doing school activities while others were just playing.",
+  "I was really bored and I thought I could talk to a new person or a new friend, I always thought having new friends was a good idea.",
+  "I then asked my friend named Ahron if he had some friends that I could talk to, I also told him I wanted to talk to a girl haha.",
+  "Well, he told me about this girl, her name was Ciara. Of course I started searching for her social, then I finally found it.",
+  // ...continue splitting the whole story like this, each item in array is a page for phone mode
+];
 
-// Globals
 let currentPage = 0;
 let deviceType = null; // 'phone' or 'tablet'
-const story = window.storyPages || []; // storyPages array must be in story.js
 
-// DOM Elements
-const readButton = document.getElementById('read-button');
-const deviceSelection = document.getElementById('device-selection');
-const phoneBtn = document.getElementById('phone-btn');
-const tabletBtn = document.getElementById('tablet-btn');
-const book = document.getElementById('book');
-const leftPage = document.getElementById('left-page');
-const rightPage = document.getElementById('right-page');
-const singlePage = document.getElementById('single-page');
-const prevBtn = document.getElementById('prev-btn');
-const nextBtn = document.getElementById('next-btn');
-const nightToggle = document.getElementById('night-toggle');
-const body = document.body;
+const bookContainer = document.getElementById("bookContainer");
+const pagesContainer = document.getElementById("pages");
+const btnPrev = document.getElementById("btnPrev");
+const btnNext = document.getElementById("btnNext");
 
-// Helper: Request fullscreen
-function openFullscreen() {
-  const el = document.documentElement;
-  if (el.requestFullscreen) {
-    el.requestFullscreen();
-  } else if (el.webkitRequestFullscreen) { /* Safari */
-    el.webkitRequestFullscreen();
-  } else if (el.msRequestFullscreen) { /* IE11 */
-    el.msRequestFullscreen();
-  }
-}
-
-// Show pages based on device type & currentPage index
 function renderPages() {
-  if (!deviceType) return;
-
-  if (deviceType === 'phone') {
-    // Show single page with one page content
-    singlePage.style.display = 'block';
-    leftPage.style.display = 'none';
-    rightPage.style.display = 'none';
-
-    // Clamp currentPage
-    if (currentPage < 0) currentPage = 0;
-    if (currentPage >= story.length) currentPage = story.length - 1;
-
-    singlePage.textContent = story[currentPage];
-  } else if (deviceType === 'tablet') {
-    // Show two pages side by side
-    singlePage.style.display = 'none';
-    leftPage.style.display = 'block';
-    rightPage.style.display = 'block';
-
-    // Clamp currentPage for even number (left page always even index)
-    if (currentPage < 0) currentPage = 0;
-    if (currentPage >= story.length) currentPage = story.length - (story.length % 2 === 0 ? 2 : 1);
-    if (currentPage % 2 !== 0) currentPage--; // force even index for left page
-
-    leftPage.textContent = story[currentPage] || "";
-    rightPage.textContent = story[currentPage + 1] || "";
+  pagesContainer.innerHTML = "";
+  
+  if (deviceType === "phone") {
+    // Show 1 page at a time
+    const pageDiv = document.createElement("div");
+    pageDiv.className = "page single";
+    pageDiv.textContent = storyPages[currentPage];
+    pagesContainer.appendChild(pageDiv);
+  } else if (deviceType === "tablet") {
+    // Show 2 pages side by side
+    // Left page (currentPage), Right page (currentPage + 1)
+    
+    const leftPage = document.createElement("div");
+    leftPage.className = "page left";
+    leftPage.textContent = storyPages[currentPage] || "";
+    
+    const rightPage = document.createElement("div");
+    rightPage.className = "page right";
+    rightPage.textContent = storyPages[currentPage + 1] || "";
+    
+    pagesContainer.appendChild(leftPage);
+    pagesContainer.appendChild(rightPage);
   }
-
-  updateNavButtons();
-}
-
-// Update Prev/Next button states (disable if at start/end)
-function updateNavButtons() {
-  if (deviceType === 'phone') {
-    prevBtn.disabled = currentPage <= 0;
-    nextBtn.disabled = currentPage >= story.length - 1;
-  } else if (deviceType === 'tablet') {
-    prevBtn.disabled = currentPage <= 0;
-    nextBtn.disabled = currentPage >= story.length - (story.length % 2 === 0 ? 2 : 1);
+  
+  // Disable prev/next buttons at bounds
+  btnPrev.disabled = currentPage <= 0;
+  
+  // For next button, max page depends on device type
+  if (deviceType === "phone") {
+    btnNext.disabled = currentPage >= storyPages.length - 1;
+  } else if (deviceType === "tablet") {
+    btnNext.disabled = currentPage >= storyPages.length - 2; // since we show 2 pages
   }
 }
 
-// Navigation button handlers
-prevBtn.addEventListener('click', () => {
-  if (deviceType === 'phone') {
+btnPrev.onclick = () => {
+  if (deviceType === "phone") {
     if (currentPage > 0) currentPage--;
-  } else {
-    if (currentPage > 0) currentPage -= 2;
+  } else if (deviceType === "tablet") {
+    if (currentPage > 1) currentPage -= 2;
+    else currentPage = 0;
   }
   renderPages();
-});
+};
 
-nextBtn.addEventListener('click', () => {
-  if (deviceType === 'phone') {
-    if (currentPage < story.length - 1) currentPage++;
-  } else {
-    if (currentPage < story.length - 2) currentPage += 2;
+btnNext.onclick = () => {
+  if (deviceType === "phone") {
+    if (currentPage < storyPages.length - 1) currentPage++;
+  } else if (deviceType === "tablet") {
+    if (currentPage < storyPages.length - 2) currentPage += 2;
   }
   renderPages();
-});
-
-// Night/day toggle handler
-nightToggle.addEventListener('change', () => {
-  if (nightToggle.checked) {
-    body.classList.add('night-mode');
-  } else {
-    body.classList.remove('night-mode');
-  }
-});
+};
 
 // Device selection buttons
-phoneBtn.addEventListener('click', () => {
-  deviceType = 'phone';
-  deviceSelection.style.display = 'none';
-  book.style.display = 'block';
+document.getElementById("btnPhone").onclick = () => {
+  deviceType = "phone";
   currentPage = 0;
   renderPages();
-});
+};
 
-tabletBtn.addEventListener('click', () => {
-  deviceType = 'tablet';
-  deviceSelection.style.display = 'none';
-  book.style.display = 'block';
+document.getElementById("btnTablet").onclick = () => {
+  deviceType = "tablet";
   currentPage = 0;
   renderPages();
-});
+};
 
-// Read button click
-readButton.addEventListener('click', () => {
-  // Go fullscreen
-  openFullscreen();
-
-  // Hide title screen elements (assuming they have IDs)
-  document.getElementById('title-screen').style.display = 'none';
-
-  // Show device selection screen
-  deviceSelection.style.display = 'block';
-});
-
-// Initial setup (hide book and device selection)
-window.addEventListener('load', () => {
-  book.style.display = 'none';
-  deviceSelection.style.display = 'none';
-});
+// Night/day toggle
+const toggleNight = document.getElementById("toggleNight");
+toggleNight.onchange = () => {
+  if (toggleNight.checked) {
+    document.body.classList.add("night");
+  } else {
+    document.body.classList.remove("night");
+  }
+  // Keep font color black always, override night mode font color
+  // We'll handle this in CSS by forcing font color black in pages container
+};
