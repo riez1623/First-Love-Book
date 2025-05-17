@@ -1,0 +1,121 @@
+/* Base Styles */
+body {
+  margin: 0;
+  background: #fdf9f3;
+  font-family: 'Georgia', serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+header {
+  margin: 15px;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+#device-picker {
+  margin-bottom: 10px;
+}
+#device-picker button {
+  margin: 0 6px;
+  padding: 8px 18px;
+  border: none;
+  background: #ccc;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+#device-picker button.active,
+#device-picker button:hover {
+  background: #7f5a25;
+  color: white;
+}
+
+/* Book Container */
+#book-container {
+  background: #fff8e1;
+  border: 2px solid #b38946;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  width: 90vw;
+  max-width: 900px;
+  height: 75vh;
+  max-height: 600px;
+  position: relative;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Mobile (Single Page) */
+#book-container.mobile {
+  flex-direction: column;
+}
+#book-container.mobile #page-left {
+  width: 100%;
+  height: 100%;
+  padding: 30px;
+  overflow: hidden;
+  user-select: text;
+  box-sizing: border-box;
+}
+#book-container.mobile #page-right,
+#middle-divider {
+  display: none;
+}
+
+/* Desktop (Double Page) */
+#book-container.desktop {
+  flex-direction: row;
+}
+#book-container.desktop #page-left,
+#book-container.desktop #page-right {
+  width: 50%;
+  height: 100%;
+  padding: 30px 40px;
+  overflow: hidden;
+  user-select: text;
+  box-sizing: border-box;
+}
+#middle-divider {
+  position: absolute;
+  width: 4px;
+  background: #b38946;
+  top: 20px;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 2px;
+}
+
+#page-left,
+#page-right {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #4a3c1a;
+  white-space: pre-wrap;
+}
+
+/* Navigation Buttons */
+#navigation {
+  margin: 15px 0 30px 0;
+}
+#navigation button {
+  padding: 10px 24px;
+  margin: 0 10px;
+  border-radius: 6px;
+  border: none;
+  background: #7f5a25;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+#navigation button:disabled {
+  background: #c2b7a0;
+  cursor: not-allowed;
+}
+#navigation button:hover:not(:disabled) {
+  background: #a06c32;
+}
