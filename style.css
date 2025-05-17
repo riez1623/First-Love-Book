@@ -1,157 +1,24 @@
-/* style.css for 'First Love' by Riez */
-
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@400;600&display=swap');
-
-:root {
-  --day-bg: #fdf6f0;
-  --day-text: #2c1a1a;
-  --night-bg: #1e1e1e;
-  --night-text: #f0e6e6;
-  --accent-color: #e39b7a;
-  --book-cover: #8b5e3c;
+/* Keep font color black in pages even in night mode */
+#pages .page {
+  color: black !important;
 }
 
-body {
-  margin: 0;
-  font-family: 'Open Sans', sans-serif;
-  transition: background-color 0.4s, color 0.4s;
-  background-color: var(--day-bg);
-  color: var(--day-text);
-  overflow-x: hidden;
-}
-
-body.night {
-  background-color: var(--night-bg);
-  color: var(--night-text);
-}
-
-h1.title {
-  font-family: 'Playfair Display', serif;
-  font-size: 3rem;
-  text-align: center;
-  margin-top: 15vh;
-  color: var(--accent-color);
-}
-
-button.read-btn, button.device-btn {
-  display: block;
-  margin: 2rem auto;
-  padding: 1rem 2rem;
-  font-size: 1.2rem;
-  border: none;
-  border-radius: 8px;
-  background-color: var(--accent-color);
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-button.read-btn:hover, button.device-btn:hover {
-  background-color: #cf7f5d;
-  transform: scale(1.05);
-}
-
-.fullscreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  background-color: inherit;
+/* Also fix page styles for tablet view */
+#pages {
   display: flex;
   justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  z-index: 1000;
+  gap: 20px;
 }
 
-.book-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-  gap: 1rem;
+.page.single {
+  width: 80%;
 }
 
-.page {
-  background-color: #fff7ef;
-  color: #1a1a1a;
-  width: 45vw;
-  max-width: 400px;
-  height: 80vh;
-  border-radius: 12px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-  padding: 1.5rem;
-  overflow-y: auto;
-  font-family: 'Playfair Display', serif;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.night .page {
-  background-color: #2a2a2a;
-  color: #e5dede;
-}
-
-.page-single {
-  width: 90vw;
-  max-width: 500px;
-}
-
-.nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 2rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 1100;
-  color: var(--accent-color);
-  user-select: none;
-}
-
-.nav-btn.left {
-  left: 1rem;
-}
-
-.nav-btn.right {
-  right: 1rem;
-}
-
-.night .nav-btn {
-  color: #ffbfa8;
-}
-
-.toggle-theme {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: transparent;
-  color: inherit;
-  border: 2px solid var(--accent-color);
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.2s;
-}
-
-.toggle-theme:hover {
-  background-color: var(--accent-color);
-  color: white;
-}
-
-.device-selection {
-  text-align: center;
-  padding: 2rem;
-}
-
-.device-btn {
-  margin: 0.5rem;
-}
-
-.hidden {
-  display: none;
+.page.left, .page.right {
+  width: 45%;
+  border: 1px solid #bbb;
+  background: white;
+  padding: 20px;
+  box-sizing: border-box;
+  box-shadow: 0 0 8px #ccc;
 }
